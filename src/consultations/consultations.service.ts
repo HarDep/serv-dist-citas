@@ -1,24 +1,67 @@
 import { Injectable } from '@nestjs/common';
+import { Consultation } from './entities/consultation.entity';
+import { GetConsultationDto } from './dto/get-consultation.dto';
 
 @Injectable()
 export class ConsultationsService {
-  create(cc: string, date: Date, authorizationFile: string) {
-    return `This action create a consultations ${cc} ${date} ${authorizationFile}`;
+
+  private consultations: Consultation[] = [];
+
+  create(cc: string, date: Date, authorizationFileName: string) {
+    const consultationCode = `${cc}-${date.getTime()}`;
+    this.consultations.push({
+      cc: cc, 
+      consultationCode: consultationCode, 
+      consultationDate: date, 
+      authorizationFileName: authorizationFileName, 
+      isCancelled: false
+    });
+      return consultationCode;
   }
 
   findAll(minDate: Date, maxDate: Date) {
-    return `This action returns all consultations from ${minDate} to ${maxDate}`;
+    let newlist = this.consultations.filter(consultation => (consultation.consultationDate >= minDate) && 
+      (consultation.consultationDate <= maxDate));
+    let list = newlist.map(consultation => {
+      const dto = new GetConsultationDto();
+      dto.cc = consultation.cc;
+      dto.consultationCode = consultation.consultationCode;
+      dto.consultationDate = consultation.consultationDate;
+      dto.isCancelled = consultation.isCancelled;
+      return dto;
+    });
+    return list;
   }
 
-  findOne(cc: string, minDate: Date, maxDate: Date) {
-    return `This action returns a #${cc} consultation from ${minDate} to ${maxDate}`;
+  findAllByCC(cc: string, minDate: Date, maxDate: Date) {
+    let newlist = this.consultations.filter(consultation => (consultation.cc === cc) && 
+      (consultation.consultationDate >= minDate) && (consultation.consultationDate <= maxDate));
+    let list = newlist.map(consultation => {
+      const dto = new GetConsultationDto();
+      dto.cc = consultation.cc;
+      dto.consultationCode = consultation.consultationCode;
+      dto.consultationDate = consultation.consultationDate;
+      dto.isCancelled = consultation.isCancelled;
+      return dto;
+    });
+    return list;
   }
 
   update(consultationCode: string) {
-    return `This action updates a #${consultationCode} consultation`;
+    let consultation = this.consultations.find(consultation => 
+      consultation.consultationCode === consultationCode);
+    consultation.isCancelled = true;
+    let dto = new GetConsultationDto();
+    dto.cc = consultation.cc;
+    dto.consultationCode = consultation.consultationCode;
+    dto.consultationDate = consultation.consultationDate;
+    dto.isCancelled = consultation.isCancelled;
+    return dto;
   }
 
   exists(cc: string, date: Date) {
-    return false;
+    let consultation = this.consultations.find(consultation => 
+      (consultation.cc === cc) && (consultation.consultationDate === date));
+    return consultation !== undefined && consultation !== null;
   }
 }

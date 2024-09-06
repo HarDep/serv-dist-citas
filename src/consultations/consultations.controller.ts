@@ -50,7 +50,6 @@ export class ConsultationsController {
     @Query('date', ParseDatePipe) consultationDate: Date) {
     if(!cc || !consultationDate || !file) throw new HttpException(MESSAGE_ERROR_FIELDS, 
       HttpStatus.BAD_REQUEST);
-      console.log(file.filename);
     if(this.consultationsService.exists(cc, consultationDate)) {
       unlink(join(FILE_UPLOAD_DIR, file.filename), (err) => {
         if(err) console.log(err);
@@ -62,7 +61,7 @@ export class ConsultationsController {
     //TODO: crear la consulta
 
     //TODO: retornar el codigo unico de la consulta
-    return this.consultationsService.create(cc, consultationDate, '');
+    return this.consultationsService.create(cc, consultationDate, file.filename);
   }
 
   //obtener una consulta con la imagen o no, y la imagen por aparte?
@@ -71,7 +70,7 @@ export class ConsultationsController {
   //-> url: /api/v1/consultations/{cc}?minDate=2020-01-01&maxDate=2020-01-02  los {} no se ponen
   @Get(':cc')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('cc') cc: string, @Query('minDate', ParseDatePipe) minDate: Date,
+  findAllByCC(@Param('cc') cc: string, @Query('minDate', ParseDatePipe) minDate: Date,
     @Query('maxDate', ParseDatePipe) maxDate: Date) {
     //TODO: validar que las fechas existan
 
@@ -81,8 +80,8 @@ export class ConsultationsController {
 
     //TODO: obtener datos de la consulta
 
-    //TODO: retornar el los datos de arreglo de tipo GetConsultationDto
-    return this.consultationsService.findOne(cc, minDate, maxDate);
+    //TODO: retornar el los datos de arreglo
+    return this.consultationsService.findAllByCC(cc, minDate, maxDate);
   }
 
   //obtener la imagen de la autorizacion de una consulta
@@ -112,7 +111,7 @@ export class ConsultationsController {
 
     //TODO: obtener datos de la consulta
 
-    //TODO: retornar el los datos de arrglo de tipo GetConsultationDto
+    //TODO: retornar el los datos de arrglo
     return this.consultationsService.findAll(minDate, maxDate);
   }
 
@@ -124,7 +123,7 @@ export class ConsultationsController {
 
     //TODO: actualizar la consulta
 
-    //TODO: retornar el los datos actualizados de tipo GetConsultationDto
+    //TODO: retornar el los datos actualizados
     return this.consultationsService.update(consultationCode);
   }
 }
