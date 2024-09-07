@@ -48,7 +48,7 @@ Now you can make requests to http://localhost:3200 (if your using the 3200 port)
 ### 1. Create a consultation
 
 - **Route:** `POST /api/v1/consultations?cc={cc}&date={date}`
-- **Valores de query de creación:**
+- **Query values:**
   - `cc` (mandatory): Patient's citizenship ID.
   - `date` (mandatory): Date of the consultation.
 - **Example:** `POST /api/v1/consultations?cc=123&date=2021-01-01 00:00 AM`
@@ -60,4 +60,64 @@ Now you can make requests to http://localhost:3200 (if your using the 3200 port)
     }
     ```
 
-### 2. 
+### 2. Find consultations by CC
+
+- **Route:** `GET /api/v1/consultations?cc={cc}`
+- **Query values:**
+  - `cc` (mandatory): Patient's citizenship ID.
+- **Example:** `GET /api/v1/consultations?cc=123`
+- **Response:**
+  - **200 OK**
+    ```json
+    [
+      {
+        "cc": "123",
+        "consultationCode": "cc-1620000000000000",
+        "consultationDate": "2021-01-01 00:00 AM",
+        "isCancelled": false
+      }
+    ]
+    ```
+
+### 3. Find Consultation Authorization
+
+- **Route:** `GET /api/v1/consultations/authorization/{consultationCode}`
+- **Params values:**
+  - `consultationCode` (mandatory): Consultation code.
+- **Example:** `GET /api/v1/consultations/authorization/cc-1620000000000000`
+- **Response:**
+  - **200 OK** consultation's authorization file
+
+### 4. Find all Consultations
+
+- **Route:** `GET /api/v1/consultations`
+- **Example:** `GET /api/v1/consultations`
+- **Response:**
+  - **200 OK**
+    ```json
+    [
+      {
+        "cc": "123",
+        "consultationCode": "cc-1620000000000000",
+        "consultationDate": "2021-01-01 00:00 AM",
+        "isCancelled": false
+      }
+    ]
+    ```
+
+### 5. Cancel Consultation
+
+- **Route:** `PUT /api/v1/consultations/{consultationCode}`
+- **Params values:**
+  - `consultationCode` (mandatory): Consultation code.
+- **Example:** `PUT /api/v1/consultations/cc-1620000000000000`
+- **Response:**
+  - **200 OK**
+    ```json
+    {
+      "cc": "123",
+      "consultationCode": "cc-1620000000000000",
+      "consultationDate": "2021-01-01 00:00 AM",
+      "isCancelled": true
+    }
+    ```
