@@ -41,3 +41,23 @@ Start the server
 ```
 
 Now you can make requests to http://localhost:3200 (if your using the 3200 port), to test the project
+
+
+## Endpoints
+
+### 1. Create a consultation
+
+- **Route:** `POST /api/v1/consultations?cc={cc}&date={date}`
+- **Valores de query de creación:**
+  - `cc` (mandatory): Patient's citizenship ID.
+  - `date` (mandatory): Date of the consultation.
+- **Example:** `POST /api/v1/consultations?cc=123&date=2021-01-01 00:00 AM`
+- **Response:**
+  - **201 Created**
+    ```json
+    {
+      "consultationCode": "cc-1620000000000000"
+    }
+    ```
+
+### 2. 
