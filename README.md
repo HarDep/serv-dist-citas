@@ -51,6 +51,8 @@ Now you can make requests to http://localhost:3200 (if your using the 3200 port)
 - **Query values:**
   - `cc` (mandatory): Patient's citizenship ID.
   - `date` (mandatory): Date of the consultation.
+- **Request body:**
+  - `file` (mandatory): Image (png, jpg, jpeg max 20MB), of the consultation authorization.
 - **Example:** `POST /api/v1/consultations?cc=123&date=2021-01-01 00:00 AM`
 - **Response:**
   - **201 Created**
