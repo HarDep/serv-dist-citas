@@ -63,8 +63,6 @@ export class ConsultationsController {
     return { consultationCode: code };
   }
 
-  //obtener una consulta con la imagen o no, y la imagen por aparte?
-
   //obtener todas las consultas entre dos fechas para una persona con cc
   //-> url: /api/v1/consultations/{cc}?minDate=2020-01-01&maxDate=2020-01-02  los {} no se ponen
   @Get(':cc')

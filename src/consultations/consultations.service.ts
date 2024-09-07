@@ -64,4 +64,9 @@ export class ConsultationsService {
       (consultation.cc === cc) && (consultation.consultationDate === date));
     return consultation !== undefined && consultation !== null;
   }
+
+  //falta consultar si existe cc
+
+  //falta obtener el filename de la autorizacion de la consulta -> con el codigo -> retorna el nombre de la imagen
+  // un ejemplo -> 12212-2020-01-01.png
 }
