@@ -25,7 +25,7 @@ To run the server, you will need to create the .env file in the root directory a
 Clone the project
 
 ```bash
-  git clone aaaaa
+  git clone https://github.com/HarDep/serv-dist-citas.git
 ```
 
 Install server dependencies
