@@ -4,8 +4,7 @@ import { ParseDatePipe } from './parse-date/parse-date.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import { diskStorage } from 'multer';
-import { unlink } from 'node:fs';
-import { createReadStream } from 'fs';
+import { createReadStream, existsSync } from 'fs';
 
 const MESSAGE_ERROR_FIELDS = 'Cedula de ciudadania, imagen de autorizacion y fecha son requeridos'
 
@@ -23,8 +22,12 @@ const authorizationNameGenerator = (req, file, callback) => {
 const authorizationFilter = (req, file, callback) => {
   const cc = req.query.cc;
   const date = req.query.date;
+  const splited = file.originalname.split('.');
+  const extension = splited[splited.length - 1];
   const isValid = file.originalname.match(/\.(jpg|jpeg|png)$/);
   if(!cc || !date) return callback(new HttpException(MESSAGE_ERROR_FIELDS, HttpStatus.BAD_REQUEST), false);
+  if(existsSync(join(FILE_UPLOAD_DIR, `${cc}-${date}.${extension}`))) return callback(
+    new HttpException('Ya existe una consulta para esa persona en esa fecha', HttpStatus.BAD_REQUEST), false);
   callback(isValid? null: new HttpException('Solo se permiten imagenes (png, jpg, jpeg)', 
     HttpStatus.BAD_REQUEST), isValid);
 };
@@ -51,11 +54,8 @@ export class ConsultationsController {
     if(!cc || !consultationDate || !file) throw new HttpException(MESSAGE_ERROR_FIELDS, 
       HttpStatus.BAD_REQUEST);
     if(this.consultationsService.exists(cc, consultationDate)) {
-      unlink(join(FILE_UPLOAD_DIR, file.filename), (err) => {
-        if(err) console.log(err);
-      });
       throw new HttpException('Ya existe una consulta para esa persona en esa fecha', 
-        HttpStatus.CONFLICT);
+        HttpStatus.BAD_REQUEST);
     }
 
     const code = this.consultationsService.create(cc, consultationDate, file.filename);
