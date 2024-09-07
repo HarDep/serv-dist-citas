@@ -19,6 +19,8 @@ To run the server, you will need to create the .env file in the root directory a
 
 `CLIENT_HOST`
 
+`CLIENT_PORT`
+
 
 ## Run Locally
 
