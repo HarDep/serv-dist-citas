@@ -61,7 +61,7 @@ export class ConsultationsService {
 
   exists(cc: string, date: Date) {
     let consultation = this.consultations.find(consultation => 
-      (consultation.cc === cc) && (consultation.consultationDate === date));
+      (consultation.cc === cc) && (consultation.consultationDate.getTime() === date.getTime()));
     return consultation !== undefined && consultation !== null;
   }
 
