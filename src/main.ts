@@ -10,10 +10,8 @@ async function bootstrap() {
 
   const clientHost = configService.get('config.clientHost');
 
-  const clientPort = configService.get('config.clientPort');
-
   app.enableCors({
-    origin: `http://${clientHost}:${clientPort}`,
+    origin: `http://${clientHost}:4200`,
   });
 
   await app.listen(port);
