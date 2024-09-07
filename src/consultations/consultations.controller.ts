@@ -58,10 +58,9 @@ export class ConsultationsController {
         HttpStatus.CONFLICT);
     }
 
-    //TODO: crear la consulta
-
-    //TODO: retornar el codigo unico de la consulta
-    return this.consultationsService.create(cc, consultationDate, file.filename);
+    const code = this.consultationsService.create(cc, consultationDate, file.filename);
+  
+    return { consultationCode: code };
   }
 
   //obtener una consulta con la imagen o no, y la imagen por aparte?
