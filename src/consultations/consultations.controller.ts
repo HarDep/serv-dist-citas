@@ -80,8 +80,12 @@ export class ConsultationsController {
     HttpException('La Consulta No Existe',HttpStatus.BAD_REQUEST);
     const filename = this.consultationsService.findFileName(consultationCode);
 
+    const splited = filename.split('.');
+    const extension = splited[splited.length - 1];
     const file = createReadStream(join(FILE_UPLOAD_DIR, filename));
-    return new StreamableFile(file);
+    return new StreamableFile(file, {
+      type: `image/${extension}`,
+    });
   }
 
   @Get()
