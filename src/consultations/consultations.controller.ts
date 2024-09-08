@@ -5,7 +5,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import { diskStorage } from 'multer';
 import { createReadStream, existsSync } from 'fs';
-import { max } from 'rxjs';
 
 const MESSAGE_ERROR_FIELDS = 'Cedula de ciudadania, imagen de autorizacion y fecha son requeridos'
 
@@ -37,7 +36,6 @@ const authorizationFilter = (req, file, callback) => {
 export class ConsultationsController {
   constructor(private readonly consultationsService: ConsultationsService) {}
 
-  //crear una consulta -> ulr: /api/v1/consultations?cc=123&date=2020-01-01
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors( FileInterceptor('file', {
@@ -46,12 +44,12 @@ export class ConsultationsController {
       filename: authorizationNameGenerator,
     }),
     limits: {
-      fileSize: 20000000,//20MB
+      fileSize: 20000000,
     },
     fileFilter: authorizationFilter,
   }))
   create(@UploadedFile() file: Express.Multer.File, @Query('cc') cc: string, 
-    @Query('date', ParseDatePipe) consultationDate: Date) {
+      @Query('date', ParseDatePipe) consultationDate: Date) {
     if(!cc || !consultationDate || !file) throw new HttpException(MESSAGE_ERROR_FIELDS, 
       HttpStatus.BAD_REQUEST);
     if(this.consultationsService.exists(cc, consultationDate)) {
@@ -64,41 +62,38 @@ export class ConsultationsController {
     return { consultationCode: code };
   }
 
-  //-> url: /api/v1/consultations/{cc}?minDate=2020-01-01&maxDate=2020-01-02  los {} no se ponen
   @Get(':cc')
   @HttpCode(HttpStatus.OK)
   findAllByCC(@Param('cc') cc: string, @Query('minDate', ParseDatePipe) minDate: Date,
-    @Query('maxDate', ParseDatePipe) maxDate: Date) {
-      if(!maxDate||!minDate) throw new HttpException('La fecha no existe',HttpStatus.BAD_REQUEST);
-      if(maxDate<minDate||maxDate==minDate) throw new HttpException('La fecha maxima debe ser mayor que la fecha minima',HttpStatus.BAD_REQUEST);
-      if(!this.consultationsService.existsCC(cc))throw new HttpException('La cedula no existe', HttpStatus.BAD_REQUEST);
+      @Query('maxDate', ParseDatePipe) maxDate: Date) {
+    if(!maxDate||!minDate) throw new HttpException('La fechas son requeridas',HttpStatus.BAD_REQUEST);
+    if(maxDate<minDate||maxDate==minDate) throw new HttpException('La fecha maxima debe ser mayor que la fecha minima',HttpStatus.BAD_REQUEST);
+    if(!this.consultationsService.existsCC(cc))throw new HttpException('La cedula no existe', HttpStatus.BAD_REQUEST);
 
     return this.consultationsService.findAllByCC(cc, minDate, maxDate);
   }
 
-  //-> url: /api/v1/consultations/authorizations/{consultationCode}  los {} no se ponen
   @Get('authorizations/:consultationCode')
   @HttpCode(HttpStatus.OK)
   findConsultationAuthorization(@Param('consultationCode') consultationCode: string) {
     if(!this.consultationsService.existConsultation(consultationCode)) throw new
     HttpException('La Consulta No Existe',HttpStatus.BAD_REQUEST);
-    const filename = this.consultationsService.findFileName(consultationCode)+"";
+    const filename = this.consultationsService.findFileName(consultationCode);
 
     const file = createReadStream(join(FILE_UPLOAD_DIR, filename));
     return new StreamableFile(file);
   }
 
-  //-> url: /api/v1/consultations?minDate=2020-01-01&maxDate=2020-01-02
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll(@Query('minDate', ParseDatePipe) minDate: Date, 
-    @Query('maxDate', ParseDatePipe) maxDate: Date) {
-      if(!maxDate||!minDate) throw new HttpException('La fecha no existe',HttpStatus.BAD_REQUEST);
-      if(maxDate<minDate||maxDate==minDate) throw new HttpException('La fecha maxima debe ser mayor que la fecha minima',HttpStatus.BAD_REQUEST);
+      @Query('maxDate', ParseDatePipe) maxDate: Date) {
+    if(!maxDate||!minDate) throw new HttpException('La fecha no existe',HttpStatus.BAD_REQUEST);
+    if(maxDate<minDate||maxDate==minDate) throw new HttpException('La fecha maxima debe ser mayor que la fecha minima',HttpStatus.BAD_REQUEST);
+    
     return this.consultationsService.findAll(minDate, maxDate);
   }
 
-  //cancelar la consulta -> url: /api/v1/consultations/{consultationCode} los {} no se ponen
   @Patch(':consultationCode')
   @HttpCode(HttpStatus.OK)
   update(@Param('consultationCode') consultationCode: string) {

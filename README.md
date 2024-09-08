@@ -66,10 +66,13 @@ Now you can make requests to http://localhost:3200 (if your using the 3200 port)
 
 ### 2. Find consultations by CC
 
-- **Route:** `GET /api/v1/consultations?cc={cc}`
-- **Query values:**
+- **Route:** `GET /api/v1/consultations/{cc}?minDate={minDate}&maxDate={maxDate}`
+- **Params values:**
   - `cc` (mandatory): Patient's citizenship ID.
-- **Example:** `GET /api/v1/consultations?cc=123`
+- **Query values:**
+  - `minDate` (optional): Minimum date of the consultation.
+  - `maxDate` (optional): Maximum date of the consultation.
+- **Example:** `GET /api/v1/consultations/123?minDate=2021-01-01 00:00 AM&maxDate=2021-01-02 00:00 AM`
 - **Response:**
   - **200 OK**
     ```json
@@ -77,7 +80,7 @@ Now you can make requests to http://localhost:3200 (if your using the 3200 port)
       {
         "cc": "123",
         "consultationCode": "cc-1620000000000000",
-        "consultationDate": "2021-01-01 00:00 AM",
+        "consultationDate": "2021-01-01 10:00 AM",
         "isCancelled": false
       }
     ]
@@ -94,8 +97,11 @@ Now you can make requests to http://localhost:3200 (if your using the 3200 port)
 
 ### 4. Find all Consultations
 
-- **Route:** `GET /api/v1/consultations`
-- **Example:** `GET /api/v1/consultations`
+- **Route:** `GET /api/v1/consultations?minDate={minDate}&maxDate={maxDate}`
+- **Query values:**
+  - `minDate` (optional): Minimum date of the consultation.
+  - `maxDate` (optional): Maximum date of the consultation.
+- **Example:** `GET /api/v1/consultations?minDate=2021-01-01 00:00 AM&maxDate=2021-01-02 00:00 AM`
 - **Response:**
   - **200 OK**
     ```json
@@ -103,7 +109,7 @@ Now you can make requests to http://localhost:3200 (if your using the 3200 port)
       {
         "cc": "123",
         "consultationCode": "cc-1620000000000000",
-        "consultationDate": "2021-01-01 00:00 AM",
+        "consultationDate": "2021-01-01 10:00 AM",
         "isCancelled": false
       }
     ]
