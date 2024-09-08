@@ -64,51 +64,37 @@ export class ConsultationsController {
     return { consultationCode: code };
   }
 
-  //obtener todas las consultas entre dos fechas para una persona con cc
   //-> url: /api/v1/consultations/{cc}?minDate=2020-01-01&maxDate=2020-01-02  los {} no se ponen
   @Get(':cc')
   @HttpCode(HttpStatus.OK)
   findAllByCC(@Param('cc') cc: string, @Query('minDate', ParseDatePipe) minDate: Date,
     @Query('maxDate', ParseDatePipe) maxDate: Date) {
-    //TODO: validar que las fechas existan
       if(!maxDate||!minDate) throw new HttpException('La fecha no existe',HttpStatus.BAD_REQUEST);
-    //TODO: validar que fecha minima sea menor o igual a la fecha maxima
       if(maxDate<minDate||maxDate==minDate) throw new HttpException('La fecha maxima debe ser mayor que la fecha minima',HttpStatus.BAD_REQUEST);
-    //TODO: validar que la cc exista
       if(!this.consultationsService.existsCC(cc))throw new HttpException('La cedula no existe', HttpStatus.BAD_REQUEST);
-    //TODO: obtener datos de la consulta
 
-    //TODO: retornar el los datos de arreglo
     return this.consultationsService.findAllByCC(cc, minDate, maxDate);
   }
 
-  //obtener la imagen de la autorizacion de una consulta
   //-> url: /api/v1/consultations/authorizations/{consultationCode}  los {} no se ponen
   @Get('authorizations/:consultationCode')
   @HttpCode(HttpStatus.OK)
   findConsultationAuthorization(@Param('consultationCode') consultationCode: string) {
-    //TODO: validar que la consulta exista
     if(!this.consultationsService.existConsultation(consultationCode)) throw new
     HttpException('La Consulta No Existe',HttpStatus.BAD_REQUEST);
-    //TODO: obtener datos de el nombre de la imagen de la autorizacion de la consulta
     const filename = this.consultationsService.findFileName(consultationCode)+"";
 
-    //TODO: retornar el archivo de la autorizacion
     const file = createReadStream(join(FILE_UPLOAD_DIR, filename));
     return new StreamableFile(file);
   }
 
-  //obtener todas las consultas entre dos fechas
   //-> url: /api/v1/consultations?minDate=2020-01-01&maxDate=2020-01-02
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll(@Query('minDate', ParseDatePipe) minDate: Date, 
     @Query('maxDate', ParseDatePipe) maxDate: Date) {
       if(!maxDate||!minDate) throw new HttpException('La fecha no existe',HttpStatus.BAD_REQUEST);
-      //TODO: validar que fecha minima sea menor o igual a la fecha maxima
       if(maxDate<minDate||maxDate==minDate) throw new HttpException('La fecha maxima debe ser mayor que la fecha minima',HttpStatus.BAD_REQUEST);
-    //TODO: obtener datos de la consulta
-    //TODO: retornar el los datos de arrglo
     return this.consultationsService.findAll(minDate, maxDate);
   }
 
@@ -116,11 +102,9 @@ export class ConsultationsController {
   @Patch(':consultationCode')
   @HttpCode(HttpStatus.OK)
   update(@Param('consultationCode') consultationCode: string) {
-    //TODO: validar que la consulta exista
     if(!this.consultationsService.existConsultation(consultationCode)) throw new
     HttpException('La Consulta No Existe',HttpStatus.BAD_REQUEST);
-    //TODO: actualizar la consulta
-    //TODO: retornar el los datos actualizados
+
     return this.consultationsService.update(consultationCode);
   }
 }

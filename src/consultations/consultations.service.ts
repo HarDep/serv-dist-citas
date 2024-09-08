@@ -81,7 +81,7 @@ export class ConsultationsService {
   findFileName(consultationCode: string): string | null {
     const consultation = this.consultations.find(consultation => consultation.consultationCode === consultationCode);
     if (consultation) {
-      return consultation.authorizationFileName.toString(); 
+      return consultation.authorizationFileName; 
     } else {
       return null;
     }
