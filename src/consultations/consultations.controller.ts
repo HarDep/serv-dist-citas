@@ -5,6 +5,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import { diskStorage } from 'multer';
 import { createReadStream, existsSync } from 'fs';
+import { max } from 'rxjs';
 
 const MESSAGE_ERROR_FIELDS = 'Cedula de ciudadania, imagen de autorizacion y fecha son requeridos'
 
@@ -70,11 +71,11 @@ export class ConsultationsController {
   findAllByCC(@Param('cc') cc: string, @Query('minDate', ParseDatePipe) minDate: Date,
     @Query('maxDate', ParseDatePipe) maxDate: Date) {
     //TODO: validar que las fechas existan
-
+      if(!maxDate||!minDate) throw new HttpException('La fecha no existe',HttpStatus.BAD_REQUEST);
     //TODO: validar que fecha minima sea menor o igual a la fecha maxima
-
+      if(maxDate<minDate||maxDate==minDate) throw new HttpException('La fecha maxima debe ser mayor que la fecha minima',HttpStatus.BAD_REQUEST);
     //TODO: validar que la cc exista
-
+      if(!this.consultationsService.existsCC(cc))throw new HttpException('La cedula no existe', HttpStatus.BAD_REQUEST);
     //TODO: obtener datos de la consulta
 
     //TODO: retornar el los datos de arreglo
@@ -87,9 +88,10 @@ export class ConsultationsController {
   @HttpCode(HttpStatus.OK)
   findConsultationAuthorization(@Param('consultationCode') consultationCode: string) {
     //TODO: validar que la consulta exista
-
+    if(!this.consultationsService.existConsultation(consultationCode)) throw new
+    HttpException('La Consulta No Existe',HttpStatus.BAD_REQUEST);
     //TODO: obtener datos de el nombre de la imagen de la autorizacion de la consulta
-    const filename = '';
+    const filename = this.consultationsService.findFileName(consultationCode)+"";
 
     //TODO: retornar el archivo de la autorizacion
     const file = createReadStream(join(FILE_UPLOAD_DIR, filename));
@@ -102,12 +104,10 @@ export class ConsultationsController {
   @HttpCode(HttpStatus.OK)
   findAll(@Query('minDate', ParseDatePipe) minDate: Date, 
     @Query('maxDate', ParseDatePipe) maxDate: Date) {
-    //TODO: validar que las fechas existan
-
-    //TODO: validar que fecha minima sea menor o igual a la fecha maxima
-
+      if(!maxDate||!minDate) throw new HttpException('La fecha no existe',HttpStatus.BAD_REQUEST);
+      //TODO: validar que fecha minima sea menor o igual a la fecha maxima
+      if(maxDate<minDate||maxDate==minDate) throw new HttpException('La fecha maxima debe ser mayor que la fecha minima',HttpStatus.BAD_REQUEST);
     //TODO: obtener datos de la consulta
-
     //TODO: retornar el los datos de arrglo
     return this.consultationsService.findAll(minDate, maxDate);
   }
@@ -117,9 +117,9 @@ export class ConsultationsController {
   @HttpCode(HttpStatus.OK)
   update(@Param('consultationCode') consultationCode: string) {
     //TODO: validar que la consulta exista
-
+    if(!this.consultationsService.existConsultation(consultationCode)) throw new
+    HttpException('La Consulta No Existe',HttpStatus.BAD_REQUEST);
     //TODO: actualizar la consulta
-
     //TODO: retornar el los datos actualizados
     return this.consultationsService.update(consultationCode);
   }
