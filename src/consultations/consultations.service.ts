@@ -66,7 +66,25 @@ export class ConsultationsService {
   }
 
   //falta consultar si existe cc
-
+ existsCC(cc: String){
+   let consultation = this.consultations.find(consultation =>
+    ( consultation.cc===cc));
+   return consultation !== undefined;
+ }
+ existConsultation(consultationCode: String){
+  let consultation = this.consultations.find(consultation => 
+    (consultation.consultationCode===consultationCode));
+    return consultation !==undefined;
+ }
   //falta obtener el filename de la autorizacion de la consulta -> con el codigo -> retorna el nombre de la imagen
   // un ejemplo -> 12212-2020-01-01.png
+  findFileName(consultationCode: string): string | null {
+    const consultation = this.consultations.find(consultation => consultation.consultationCode === consultationCode);
+    if (consultation) {
+      return consultation.authorizationFileName; 
+    } else {
+      return null;
+    }
+  }
+  
 }
