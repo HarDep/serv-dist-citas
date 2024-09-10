@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { existsSync, mkdir, rm } from 'fs';
+import { existsSync, mkdirSync, rmdirSync, rmSync } from 'fs';
 import { join } from 'path';
 
 async function bootstrap() {
@@ -22,13 +22,9 @@ async function bootstrap() {
 
   // limpiar datos
   if(existsSync(join(process.cwd(), 'uploads'))) {
-    rm(join(process.cwd(), 'uploads'), { recursive: true }, (err) => {
-      if(err) console.log(err);
-    })
+    rmdirSync(join(process.cwd(), 'uploads'))
   }
-  mkdir(join(process.cwd(), 'uploads'), (err) => {
-    if(err) console.log(err);
-  })
+  mkdirSync(join(process.cwd(), 'uploads'))
 
   console.log(`Server running on port ${port}`);
 }
