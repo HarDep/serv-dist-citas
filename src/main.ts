@@ -14,15 +14,17 @@ async function bootstrap() {
 
   const clientPort = configService.get('config.clientPort');
 
-  app.enableCors({
-    origin: `http://${clientHost}:${clientPort}`,
-  });
+  app.enableCors(
+    //{
+    //  origin: `http://${clientHost}:${clientPort}`,
+    //}
+  );
 
   await app.listen(port);
 
   // limpiar datos
   if(existsSync(join(process.cwd(), 'uploads'))) {
-    rmdirSync(join(process.cwd(), 'uploads'))
+    rmSync(join(process.cwd(), 'uploads'), { recursive: true });
   }
   mkdirSync(join(process.cwd(), 'uploads'))
 
