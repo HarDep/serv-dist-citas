@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { existsSync, rm } from 'fs';
+import { existsSync, mkdir, rm } from 'fs';
 import { join } from 'path';
 
 async function bootstrap() {
@@ -26,6 +26,9 @@ async function bootstrap() {
       if(err) console.log(err);
     })
   }
+  mkdir(join(process.cwd(), 'uploads'), (err) => {
+    if(err) console.log(err);
+  })
 
   console.log(`Server running on port ${port}`);
 }
